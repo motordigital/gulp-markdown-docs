@@ -75,13 +75,13 @@ function gulpMarkdownDocs(fileOpt, opt) {
 
 	function appendToIndex(categories) {
 		// add categories and their docs to $
-		var $nav = $('nav.navbar');
+		var $nav = $('.doc-nav');
 		var $content = $('.doc-content');
 		categories.forEach(function (category) {
 			var $section = $('<section class="doc-section"></section>');
-      var $navGroup = $('<ul class="navbar-nav"></ul>');
+      var $navGroup = $('<ul class="doc-nav-group"></ul>');
 			if (category.categoryLabel && category.categorySlug !== _ORPHAN_SLUG) { 
-				$navGroup.append('<li class="nav-item"><a class="nav-link" href="#'+category.categorySlug+'">'+category.categoryLabel+'</a></li>');
+				$navGroup.append('<li class="doc-nav-group-header"><a href="#'+category.categorySlug+'">'+category.categoryLabel+'</a></li>');
 				$section.append('<h1 class="doc-section-header"><a class="doc-nav-anchor" name="'+category.categorySlug+'"></a>'+category.categoryLabel+'</h1>'); 
 			}
 			category.children.forEach(function (doc) {
@@ -89,8 +89,8 @@ function gulpMarkdownDocs(fileOpt, opt) {
 				if (doc.meta) {
 					anchor += '<a class="doc-nav-anchor" name="'+doc.meta.id+'"></a>';
 					$navGroup.append(
-						'<li class="nav-item">'+
-							'<a class="nav-link" href="#'+doc.meta.id+'">'+doc.meta.label+'</a>'+
+						'<li class="doc-nav-item">'+
+							'<a href="#'+doc.meta.id+'">'+doc.meta.label+'</a>'+
 						'</li>'
 					);
 				}
