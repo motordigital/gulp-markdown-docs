@@ -41,7 +41,8 @@ function gulpMarkdownDocs(fileOpt, opt) {
 	
 	// merge defaults and passed options 
 	var options = _.extend({}, DEFAULTS, opt);
-	var markdownOptions = options.markdown = _.extend({}, DEFAULTS.markdown, opt.markdown);
+
+var markdownOptions = options.markdown = _.extend({}, DEFAULTS.markdown, opt.markdown);
 
 	// apply options for markdown parsing
 	marked.setOptions(markdownOptions);
@@ -108,6 +109,7 @@ function gulpMarkdownDocs(fileOpt, opt) {
 
 	var collectedDocs = [];
 	function sortDocs(docs) {
+		
 		// first group the docs according to category
 		var categories = {};
 		docs.forEach(function (doc, i) {
@@ -130,11 +132,12 @@ function gulpMarkdownDocs(fileOpt, opt) {
 			return { categoryLabel: category.categoryLabel, children: category.children, categoryRank: category.categoryRank, categorySlug: key }
 		});
 		// sort categories
-		categories = _.sortBy(categories, (options.categorySort === 'rank' ? 'categoryRank' : 'categoryLabel'));
+		categories = _.sortBy(categories, (options.categorySort === 'rank' ? 'categoryRank' : 'categoryRank'));
+		
 		// sort docs
 		categories.forEach(function (category) {
 			category.children = _.sortBy(category.children, function (child, idx) {
-				return options.documentSort === 'rank' ? child.meta.documentRank : child.meta && child.meta.documentLabel || idx;
+				return options.documentSort === 'rank' ? child.meta.documentRank : child.meta && child.meta.documentRank || idx;
 			});
 		});
 		return categories;
