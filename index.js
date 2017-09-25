@@ -9,6 +9,7 @@ var PluginError = gutil.PluginError;
 var fs = require('fs');
 var File = gutil.File;
 var highlight = require('highlight.js');
+var yamlFront = require('yaml-front-matter');
 
 function gulpMarkdownDocs(fileOpt, opt) {
 	if (!fileOpt) throw new PluginError('gulp-markdown-docs', 'Missing file argument for gulp-markdown-docs');
@@ -74,13 +75,13 @@ function gulpMarkdownDocs(fileOpt, opt) {
 
 	function appendToIndex(categories) {
 		// add categories and their docs to $
-		var $nav = $('.doc-nav');
+		var $nav = $('nav.navbar');
 		var $content = $('.doc-content');
 		categories.forEach(function (category) {
 			var $section = $('<section class="doc-section"></section>');
-      var $navGroup = $('<ul class="doc-nav-group"></ul>');
+      var $navGroup = $('<ul class="navbar-nav"></ul>');
 			if (category.categoryLabel && category.categorySlug !== _ORPHAN_SLUG) { 
-				$navGroup.append('<li class="doc-nav-group-header"><a href="#'+category.categorySlug+'">'+category.categoryLabel+'</a></li>');
+				$navGroup.append('<li class="nav-item"><a class="nav-link" href="#'+category.categorySlug+'">'+category.categoryLabel+'</a></li>');
 				$section.append('<h1 class="doc-section-header"><a class="doc-nav-anchor" name="'+category.categorySlug+'"></a>'+category.categoryLabel+'</h1>'); 
 			}
 			category.children.forEach(function (doc) {
@@ -88,8 +89,8 @@ function gulpMarkdownDocs(fileOpt, opt) {
 				if (doc.meta) {
 					anchor += '<a class="doc-nav-anchor" name="'+doc.meta.id+'"></a>';
 					$navGroup.append(
-						'<li class="doc-nav-item">'+
-							'<a href="#'+doc.meta.id+'">'+doc.meta.label+'</a>'+
+						'<li class="nav-item">'+
+							'<a class="nav-link" href="#'+doc.meta.id+'">'+doc.meta.label+'</a>'+
 						'</li>'
 					);
 				}
@@ -148,11 +149,11 @@ function gulpMarkdownDocs(fileOpt, opt) {
 		if (!firstFile) firstFile = file;
 		try {
 			if (options.yamlMeta) {
-				var split_text = file.contents.toString().split(/\n\n/);
-				markdown = split_text.splice(1, split_text.length-1).join('\n\n');
+				// var split_text = file.contents.toString().split(/\n\n/);
+				// markdown = split_text.splice(1, split_text.length-1).join('\n\n');
 				collectedDocs.push({
-					meta:yaml.safeLoad(split_text[0]),
-					html:parseMarkdown(markdown)
+					meta:yaml.safeLoad(yamlFront.loadFront(file.contents.toString())),
+					html:parseMarkdown(file.contents.toString())
 				});
 			} else {
 				collectedDocs.push({
