@@ -75,13 +75,13 @@ function gulpMarkdownDocs(fileOpt, opt) {
 
 	function appendToIndex(categories) {
 		// add categories and their docs to $
-		var $nav = $('.doc-nav');
+		var $nav = $('.navbar');
 		var $content = $('.doc-content');
 		categories.forEach(function (category) {
 			var $section = $('<section class="doc-section"></section>');
-      var $navGroup = $('<ul class="doc-nav-group"></ul>');
+      var $navGroup = $('<ul class="navbar-nav"></ul>');
 			if (category.categoryLabel && category.categorySlug !== _ORPHAN_SLUG) { 
-				$navGroup.append('<li class="doc-nav-group-header"><a href="#'+category.categorySlug+'">'+category.categoryLabel+'</a></li>');
+				$navGroup.append('<li class="nav-item"><a class="nav-link" href="#'+category.categorySlug+'">'+category.categoryLabel+'</a></li>');
 				$section.append('<h1 class="doc-section-header"><a class="doc-nav-anchor" name="'+category.categorySlug+'"></a>'+category.categoryLabel+'</h1>'); 
 			}
 			category.children.forEach(function (doc) {
@@ -89,8 +89,8 @@ function gulpMarkdownDocs(fileOpt, opt) {
 				if (doc.meta) {
 					anchor += '<a class="doc-nav-anchor" name="'+doc.meta.id+'"></a>';
 					$navGroup.append(
-						'<li class="doc-nav-item">'+
-							'<a href="#'+doc.meta.id+'">'+doc.meta.label+'</a>'+
+						'<li class="nav-item">'+
+							'<a  class="nav-link" href="#'+doc.meta.id+'">'+doc.meta.label+'</a>'+
 						'</li>'
 					);
 				}
@@ -145,15 +145,17 @@ function gulpMarkdownDocs(fileOpt, opt) {
 		if (file.isNull()) return; // ignore
     if (file.isStream()) return this.emit('error', new PluginError('gulp-markdown-docs',  'Streaming not supported'));
 
-		var markdown, meta, html;
+		var markdown, meta, html, content;
 		if (!firstFile) firstFile = file;
 		try {
 			if (options.yamlMeta) {
-				// var split_text = file.contents.toString().split(/\n\n/);
-				// markdown = split_text.splice(1, split_text.length-1).join('\n\n');
+				var split_text = yamlFront.loadFront(file.contents.toString());
+				meta = JSON.parse(JSON.stringify(split_text));
+				delete(meta.__content);
+				
 				collectedDocs.push({
-					meta:yaml.safeLoad(yamlFront.loadFront(file.contents.toString())),
-					html:parseMarkdown(file.contents.toString())
+					meta:meta,
+					html:parseMarkdown(split_text.__content)
 				});
 			} else {
 				collectedDocs.push({
