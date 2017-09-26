@@ -86,7 +86,7 @@ var markdownOptions = options.markdown = _.extend({}, DEFAULTS.markdown, opt.mar
       var $navGroup = $('<ul class="navbar-nav"></ul>');
 			if (category.categoryLabel && category.categorySlug !== _ORPHAN_SLUG) { 
 				$navGroup.append('<li class="nav-item"><a class="nav-link" href="#'+category.categorySlug+'">'+category.categoryLabel+'</a></li>');
-				$section.append('<h1 class="doc-section-header"><a class="doc-nav-anchor" name="'+category.categorySlug+'"></a>'+category.categoryLabel+'</h1>'); 
+				$section.append('<div class="doc-section-header"><a class="doc-nav-anchor" name="'+category.categorySlug+'"></a>'+category.categoryLabel+'</div>'); 
 			}
 			category.children.forEach(function (doc) {
 				var anchor = '';
