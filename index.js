@@ -4,12 +4,15 @@ var through = require('through');
 var path = require('path');
 var cheerio = require('cheerio');
 var marked = require('marked');
+var renderer = new marked.Renderer();
 var yaml = require('js-yaml');
 var PluginError = gutil.PluginError;
 var fs = require('fs');
 var File = gutil.File;
 var highlight = require('highlight.js');
 var yamlFront = require('yaml-front-matter');
+
+require('marked-images')(renderer);  
 
 function gulpMarkdownDocs(fileOpt, opt) {
 	if (!fileOpt) throw new PluginError('gulp-markdown-docs', 'Missing file argument for gulp-markdown-docs');
@@ -71,7 +74,7 @@ var markdownOptions = options.markdown = _.extend({}, DEFAULTS.markdown, opt.mar
 	}
 
 	function parseMarkdown(contents) {
-		return marked(contents);
+		return marked(contents, {renderer:renderer});
 	}
 
 	function appendToIndex(categories) {
